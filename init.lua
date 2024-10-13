@@ -174,6 +174,8 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+vim.keymap.set('n', '<C-s>', ':w<CR>', { desc = 'Save current file' })
+vim.keymap.set('i', '<C-s>', '<Esc>:w<CR>', { desc = 'Save current file' })
 
 -- TIP: Disable arrow keys in normal mode
 -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
@@ -189,6 +191,15 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+-- Java Key maps
+vim.keymap.set('n', '<leader>jr', ':JavaRunnerRunMain<CR>', { desc = 'Execute Java Main Class' })
+vim.keymap.set('n', '<leader>jev', ':JavaRefactorExtractVariable<CR>', { desc = 'Extract Variable' })
+vim.keymap.set('v', '<leader>jev', ':JavaRefactorExtractVariable<CR>', { desc = 'Extract Variable (Visual)' })
+vim.keymap.set('n', '<leader>jem', ':JavaRefactorExtractMethod<CR>', { desc = 'Extract Method' })
+vim.keymap.set('v', '<leader>jem', ':JavaRefactorExtractMethod<CR>', { desc = 'Extract Method (Visual)' })
+vim.keymap.set('n', '<leader>jcr', ':JavaSettingsChangeRuntime<CR>', { desc = 'Change Java Runtime Version' })
+vim.keymap.set('n', '<leader>jp', ':JavaProfile<CR>', { desc = 'Java Profiles' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -459,6 +470,7 @@ require('lazy').setup({
       { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
+      'nvim-java/nvim-java',
 
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
@@ -659,6 +671,14 @@ require('lazy').setup({
             -- certain features of an LSP (for example, turning off formatting for ts_ls)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
+          end,
+          jdtls = function()
+            require('java').setup {
+              -- Your custom jdtls settings goes here
+            }
+            require('lspconfig').jdtls.setup {
+              -- Your custom nvim-java configuration goes here
+            }
           end,
         },
       }
@@ -888,7 +908,7 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'java' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -917,7 +937,7 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
